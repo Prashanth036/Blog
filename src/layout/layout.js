@@ -1,4 +1,5 @@
-import * as React from 'react';
+// import * as React from 'react';
+import React from 'react'
 import  {Outlet} from "react-router-dom"
 import { ThemeProvider } from '@mui/material/styles'; // Import ThemeProvider
 import { createTheme } from '@mui/material/styles'; // Import createTheme
@@ -14,6 +15,9 @@ import getLPTheme from "./getLpTheme";
 import AppAppBar from '../app/Navbar';
 import Hero from '../components/Hero';
 import Testimonials from '../components/post';
+import MsgBubble from '../components/chatbox/msgbubble';
+import Cookies from "js-cookie"
+
 
 
 
@@ -59,7 +63,7 @@ ToggleCustomTheme.propTypes = {
   toggleCustomTheme: PropTypes.func.isRequired,
 };
 
-export default function LandingPage() {
+export default function LandingPage({setNotifs,socket}) {
   const [mode, setMode] = React.useState('light');
   const [showCustomTheme, setShowCustomTheme] = React.useState(true);
   const LPtheme = createTheme(getLPTheme(mode));
@@ -73,11 +77,15 @@ export default function LandingPage() {
     setShowCustomTheme((prev) => !prev);
   };
 
+  let isLoggedIn=Cookies.get('token');
+
+  
+
   return (
     <ThemeProvider theme={showCustomTheme ? LPtheme : defaultTheme }>
       <CssBaseline />
       {/* <App > */}
-      <AppAppBar mode={mode} toggleColorMode={toggleColorMode} />
+      <AppAppBar mode={mode} toggleColorMode={toggleColorMode} setNotifs={setNotifs} />
       <Box
       id="hero"
       sx={(theme) => ({
@@ -93,6 +101,9 @@ export default function LandingPage() {
               <Stack spacing={2} useFlexGap sx={{ width: { xs: '100%', sm: '70%' } }}>
 </Stack>
       <Outlet /> 
+     {/* {isLoggedIn && */}
+      <MsgBubble socket={socket}/> 
+      {/* } */}
       </Box>
     {/*   <ToggleCustomTheme
         showCustomTheme={showCustomTheme}

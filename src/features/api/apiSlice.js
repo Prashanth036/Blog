@@ -9,7 +9,10 @@ export const apiSlice = createApi(
     {
    
     reducerPath: 'api',
-    baseQuery: fetchBaseQuery({ baseUrl: 'https://node-rest-api-pji2.onrender.com' ,
+    baseQuery: fetchBaseQuery({ baseUrl: 
+        // 'https://node-rest-api-pji2.onrender.com'
+        "http://localhost:4000"
+         ,
      headers: {Authorization:  `Bearer ${token!==''? token:''}`}}),
      tagTypes: ['Post', 'User'],
     endpoints: builder => ({

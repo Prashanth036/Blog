@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Routes,
   Route
 
@@ -19,16 +19,30 @@ import { AnonmyousRoutes } from './pages/anonmyousRoute'
 import Testimonials from './components/post'
 import { useGetPostsByUserQuery } from './features/api/apiSlice'
 import Cookies from 'js-cookie'
+import { Notifications } from './components/notifications'
+import { io } from 'socket.io-client'
+
+const socket=io('ws://localhost:4000');
 
 
 function App() {
+  const [notifs,setNotifs]=useState([]);
+//  const  notifis=notifs.flat()
+  useEffect(()=>{
+      socket.on("connect",()=> console.log(socket.connected));
+      socket.on("welMsg",(msg)=>setNotifs([msg,...notifs]))
+      setTimeout(()=>socket.on("welMsgs",(arg)=>setNotifs([...notifs,...arg]))
+      , 2000); 
+  },[]);
+ 
+  console.log(notifs);
 
   return (
     <Router >
 
       <div className="App">
         <Routes >
-          <Route element={<LandingPage />}>
+          <Route element={<LandingPage setNotifs={setNotifs} socket={socket}/>}>
             <Route index path="/" element={<Hero />} />
             <Route element={<AnonmyousRoutes />}>
               <Route path='/login' element={<LogIn />} />
@@ -40,6 +54,7 @@ function App() {
               <Route path="/posts" element={   <UserPostsLists /> }/>
               <Route path="/posts/:postsId/delete"   element={ <UserPostsLists />} />
               <Route path="/posts/:postId/edit" element={<UserPostsLists />} />
+              <Route path='/notifications' element={<Notifications socket={notifs} />} />
             </Route>
 
 

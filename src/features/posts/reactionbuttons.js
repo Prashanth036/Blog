@@ -1,3 +1,4 @@
+import React from 'react'
 import { useDispatch } from 'react-redux'
 import { create, postReactionAdded} from './postsSlice'
 import { useUpdateReactionsMutation } from '../api/apiSlice'

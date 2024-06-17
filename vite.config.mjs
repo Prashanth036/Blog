@@ -18,6 +18,7 @@ const rollupPlugin = (matchers) => ({
 // which worked with Create React App.
 // Now that the template uses Vite, we mimic that behavior.
 export default defineConfig({
+  base:'/Blog',
   plugins: [react()],
   build: {
     rollupOptions: {

@@ -17,7 +17,8 @@ import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Navigate, Outlet } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
-
+import logo from "/logo512.png";
+import HomeIcon from '@mui/icons-material/Home';
 
 // import Link style={{textDecoration:'none'}}from '@mui/material/Link';
 
@@ -34,6 +35,7 @@ import ModeNightRoundedIcon from '@mui/icons-material/ModeNightRounded';
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
 import { addUser, deleteUser } from '../features/users/usersSlice';
+import { AccountCircle, DynamicFeed, NotificationsActive } from '@mui/icons-material';
 
 
 function ToggleColorMode({ mode, toggleColorMode }) {
@@ -71,7 +73,7 @@ const logoStyle = {
   marginRight: '30px'
 };
 
-function AppAppBar({ mode, toggleColorMode }) {
+function AppAppBar({ mode, toggleColorMode,setNotifs }) {
   const [open, setOpen] = React.useState(false);
   const [details, setDetails] = React.useState(false);
   // console.log(users);
@@ -81,24 +83,25 @@ function AppAppBar({ mode, toggleColorMode }) {
 
   const dispatch = useDispatch();
   let userDetails
-   if (Cookies.get("userDetails")) {
+  if (Cookies.get("userDetails")) {
     userDetails = JSON.parse(Cookies.get("userDetails"));
   }
   // console.log(userDetails);
- 
+
   let bools
-  useEffect(()=>{
-  if (userDetails) {
-    
-    let username =userDetails["username"]
-    let userId = userDetails["userId"];
-   dispatch(
-      addUser({
-        username: username,
-        userId: userId
-      })
-    )
-  }},[])
+  useEffect(() => {
+    if (userDetails) {
+
+      let username = userDetails["username"]
+      let userId = userDetails["userId"];
+      dispatch(
+        addUser({
+          username: username,
+          userId: userId
+        })
+      )
+    }
+  }, [])
 
 
 
@@ -173,43 +176,53 @@ function AppAppBar({ mode, toggleColorMode }) {
               }}
             >
               <img
-                src="/logo192.png"
+                src={logo}
                 style={logoStyle}
                 alt="logo of sitemark"
               />
               <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                 <MenuItem
-
                   sx={{ py: '6px', px: '12px' }}
                 >
                   <Typography variant="body2" color="text.primary">
-                    <Link style={{ textDecoration: 'none' }} to="/">  Home </Link>
+                    <Link style={{ textDecoration: 'none' }} to="/">
+                      <HomeIcon sx={{ fontSize: '30px',display:'block' }} />
+                      <span style={{ fontSize: '12px', textAlign: 'center' }} >Home</span>
+                    </Link>
                   </Typography>
                 </MenuItem>
-                {userDetails !== undefined ? <><MenuItem
-
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    <Link style={{ textDecoration: 'none' }} underline="none" to="/posts">  Posts </Link>
-                  </Typography>
-                </MenuItem><MenuItem
-                  onClick={() => scrollToSection('highlights')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                    <Typography variant="body2" color="text.primary">
-                      Notifications
-                    </Typography>
-                  </MenuItem><MenuItem
-                    onClick={() => scrollToSection('pricing')}
+                {userDetails !== undefined ? <>
+                  <MenuItem
                     sx={{ py: '6px', px: '12px' }}
                   >
                     <Typography variant="body2" color="text.primary">
-                      Profile
+                      <Link style={{ textDecoration: 'none' }} underline="none" to="/posts">
+                        <DynamicFeed sx={{ fontSize: '28px', display: 'block' }} />
+                        <span style={{fontSize:'12px'}}>Posts</span>
+                         </Link>
                     </Typography>
-                  </MenuItem></>
-                : ''}
-                
+                  </MenuItem>
+                  <MenuItem
+                    sx={{ py: '6px', px: '12px' }}
+                  >
+                    <Typography variant="body2" color="text.primary">
+                    <Link style={{ textDecoration: 'none' }} underline="none" to="/notifications">
+                      <NotificationsActive sx={{display:'block',fontSize:'28px',mx:2}} />
+                      <span style={{fontSize:'12px'}}>Notifications</span>
+                      </Link>
+                    </Typography>
+                  </MenuItem>
+                  {/* <MenuItem
+                    sx={{ py: '6px', px: '12px' }}
+                  >
+                    <Typography variant="body2" color="text.primary">
+                      <AccountCircle />
+                      Me
+                    </Typography>
+                  </MenuItem> */}
+                  </>
+                  : ''}
+
                 {/* <MenuItem
                   onClick={() => scrollToSection('faq')}
                   sx={{ py: '6px', px: '12px' }}
@@ -231,10 +244,12 @@ function AppAppBar({ mode, toggleColorMode }) {
                 <><MenuItem
                   sx={{ py: '6px', px: '12px' }}
                 >
-                  <Typography variant="body2" color="text.primary">
+                  <Typography variant="body2" color="primary" sx={{fontWeight:'bolder'}}>
+                  <AccountCircle sx={{display:'block',textAlign:'center',mx:'3px'}}/>
                     {users.username}
                   </Typography>
-                </MenuItem><Button
+                </MenuItem>
+                <Button
                   color="primary"
                   variant="contained"
                   size="small"
@@ -242,9 +257,10 @@ function AppAppBar({ mode, toggleColorMode }) {
                   onClick={() => {
                     Cookies.remove("userDetails")
                     Cookies.remove("token");
-                   navigate("/login");
-                   window.location.reload();
-                   
+                    setNotifs([]);
+                    navigate("/login");
+                    // window.location.reload();
+
                   }}
                 >Log out</Button></>
                 :
@@ -274,7 +290,7 @@ function AppAppBar({ mode, toggleColorMode }) {
                       Sign up
                     </Button>
                   </Link>
-                 
+
                 </>
               }
             </Box>
@@ -308,10 +324,10 @@ function AppAppBar({ mode, toggleColorMode }) {
                     <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
                   </Box>
                   <MenuItem onClick={() => scrollToSection('features')}>
-                  <Link style={{ textDecoration: 'none' }} to="/">  Home </Link>
+                    <Link style={{ textDecoration: 'none' }} to="/">  Home </Link>
                   </MenuItem>
                   <MenuItem onClick={() => scrollToSection('testimonials')}>
-                  <Link style={{ textDecoration: 'none' }} underline="none" to="/posts">  Posts </Link>
+                    <Link style={{ textDecoration: 'none' }} underline="none" to="/posts">  Posts </Link>
                   </MenuItem>
                   <MenuItem onClick={() => scrollToSection('highlights')}>
                     Notifications

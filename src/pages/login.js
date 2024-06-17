@@ -1,4 +1,5 @@
-import * as React from 'react';
+// import * as React from 'react';
+import React from 'react'
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -61,9 +62,13 @@ export default function LogIn() {
             .then((payload) => {
                 console.log('fulfilled', payload)
                 if (payload.status) {
-                    Cookies.set('token',payload.token);
+                    Cookies.set('token',payload.token,
+                        // { sameSite: 'None' }
+                    );
                     const token=JSON.parse(atob(payload.token.split('.')[1]));
-                    Cookies.set('userDetails',JSON.stringify(token));
+                    Cookies.set('userDetails',JSON.stringify(token)
+                    // ,{ sameSite: 'none' }
+                );
                     let username=token.username;
                     let userId=token.userId
                    /*  dispatch(
